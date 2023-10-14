@@ -42,9 +42,7 @@ public class ProdutoController {
 
 	@GetMapping
 	public ResponseEntity<Page<Produto>> obterProdutos(@PageableDefault Pageable paginacao) {
-		Page<Produto> pagina = produtoRepository.findAll(paginacao).map(produto -> {
-			return produto;
-		});
+		Page<Produto> pagina = produtoRepository.findAll(paginacao);
 		return ResponseEntity.ok().body(pagina);
 	}
 
