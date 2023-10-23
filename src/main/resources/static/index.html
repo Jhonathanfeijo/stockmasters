@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemplo Bootstrap</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background: #F2F2F2;
+            min-height: 100vh;
+        }
+
+        .table {
+            text-align: center;
+        }
+
+        .table-bordered {
+            border: 1px solid #3E3E3E;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-container input {
+            flex: 1;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #23468C;">
+        <a class="navbar-brand mx-4" href="#">StockMaster</a>
+    </nav>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <!-- Campo de pesquisa e botão -->
+                <div class="search-container">
+                    <input type="text" class="form-control" placeholder="Pesquisar produto" id="searchInput">
+                    <button class="btn btn-primary" type="button" onclick="fetchProducts()">Pesquisar</button>
+                </div>
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Código do Produto</th>
+                            <th scope="col">Descrição</th>
+                            <th scope="col">Valor</th>
+                            <th scope="col">Quantidade</th>
+                            <th scope="col">Alterar</th>
+                            <th scope="col">Deletar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTableBody">
+                        <!-- Linhas de dados da tabela -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-4 text-center">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProductModal">Cadastrar
+            Produto</button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProductModalLabel">Cadastrar Produto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="productCode">Código do Produto</label>
+                            <input type="text" class="form-control" id="productCode">
+                        </div>
+                        <div class="form-group">
+                            <label for="productDescription">Descrição do Produto</label>
+                            <input type="text" class="form-control" id="productDescription">
+                        </div>
+                        <div class="form-group">
+                            <label for="productPrice">Preço do Produto</label>
+                            <input type="text" class="form-control" id="productPrice">
+                        </div>
+                        <div class="form-group">
+                            <label for="productQuantity">Quantidade do Produto</label>
+                            <input type="text" class="form-control" id="productQuantity">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" onclick="addProduct()">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function fetchProducts() {
+            $.ajax({
+                url: "http://localhost:8080/produto",
+                type: "GET",
+                success: function (data) {
+                    // Supondo que a estrutura do Pageable seja algo como { content: [], pageable: { pageSize: 10, pageNumber: 0 }, totalPages: 2, totalElements: 15 }
+                    let products = data.content; // Obtém a lista de produtos do Pageable
+                    let tableBody = $("#productTableBody");
+                    tableBody.empty();
+                    products.forEach(function (product) {
+                        tableBody.append("<tr>" +
+                            "<th scope='row'>" + product.codigo + "</th>" +
+                            "<td>" + product.descricao + "</td>" +
+                            "<td>" + product.valor + "</td>" +
+                            "<td>" + product.quantidade + "</td>" +
+                            "<td><button type='button' class='btn btn-primary'>Alterar</button></td>" +
+                            "<td><button type='button' class='btn btn-danger'>Deletar</button></td>" +
+                            "</tr>");
+                    });
+
+                    // Você pode usar os outros campos do Pageable, como totalPages e totalElements, para implementar a lógica de paginação, se necessário.
+                    console.log("Página atual: " + data.pageable.pageNumber);
+                    console.log("Total de páginas: " + data.totalPages);
+                    console.log("Total de elementos: " + data.totalElements);
+                }
+            });
+        } console.log("Quantidade do Produto:", productQuantity);
+        
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+
+</html>

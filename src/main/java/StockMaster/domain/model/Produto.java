@@ -1,4 +1,4 @@
-package StockMaster.model.produto;
+package StockMaster.domain.model;
 
 import java.math.BigDecimal;
 
