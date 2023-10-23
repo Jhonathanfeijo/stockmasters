@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exemplo Bootstrap</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
             background: #F2F2F2;
@@ -59,7 +58,46 @@
                         </tr>
                     </thead>
                     <tbody id="productTableBody">
-                        <!-- Linhas de dados da tabela -->
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Produto 1</td>
+                            <td>R$ 25.50</td>
+                            <td>50</td>
+                            <td><button type="button" class="btn btn-primary">Alterar</button></td>
+                            <td><button type="button" class="btn btn-danger">Deletar</button></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>Produto 2</td>
+                            <td>R$ 15.30</td>
+                            <td>30</td>
+                            <td><button type="button" class="btn btn-primary">Alterar</button></td>
+                            <td><button type="button" class="btn btn-danger">Deletar</button></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>Produto 3</td>
+                            <td>R$ 45.20</td>
+                            <td>20</td>
+                            <td><button type="button" class="btn btn-primary">Alterar</button></td>
+                            <td><button type="button" class="btn btn-danger">Deletar</button></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">4</th>
+                            <td>Produto 4</td>
+                            <td>R$ 32.10</td>
+                            <td>70</td>
+                            <td><button type="button" class="btn btn-primary">Alterar</button></td>
+                            <td><button type="button" class="btn btn-danger">Deletar</button></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">5</th>
+                            <td>Produto 5</td>
+                            <td>R$ 55.70</td>
+                            <td>40</td>
+                            <td><button type="button" class="btn btn-primary">Alterar</button></td>
+                            <td><button type="button" class="btn btn-danger">Deletar</button></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -108,41 +146,39 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function fetchProducts() {
-            $.ajax({
-                url: "http://localhost:8080/produto",
-                type: "GET",
-                success: function (data) {
-                    // Supondo que a estrutura do Pageable seja algo como { content: [], pageable: { pageSize: 10, pageNumber: 0 }, totalPages: 2, totalElements: 15 }
-                    let products = data.content; // Obtém a lista de produtos do Pageable
-                    let tableBody = $("#productTableBody");
-                    tableBody.empty();
-                    products.forEach(function (product) {
-                        tableBody.append("<tr>" +
-                            "<th scope='row'>" + product.codigo + "</th>" +
-                            "<td>" + product.descricao + "</td>" +
-                            "<td>" + product.valor + "</td>" +
-                            "<td>" + product.quantidade + "</td>" +
-                            "<td><button type='button' class='btn btn-primary'>Alterar</button></td>" +
-                            "<td><button type='button' class='btn btn-danger'>Deletar</button></td>" +
-                            "</tr>");
-                    });
-
-                    // Você pode usar os outros campos do Pageable, como totalPages e totalElements, para implementar a lógica de paginação, se necessário.
-                    console.log("Página atual: " + data.pageable.pageNumber);
-                    console.log("Total de páginas: " + data.totalPages);
-                    console.log("Total de elementos: " + data.totalElements);
-                }
-            });
-        } console.log("Quantidade do Produto:", productQuantity);
-        
-    </script>
-
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script>
+        function obterProdutos() {
+            var table = document.querySelector("table");
+            fetch('http://localhost:8080/produto').then(res => res.json()).then(res => res.content).then(produtos => {
+                produtos.foreach(produto => {
+                    console.log(produto);
+                    var thId = document.createElement("th");
+                    thId.setAttribute("scope", "row");
+                    var tdDescricao = document.createElement("td");
+                    tdDescricao.textContent(produto.descricao);
+                    var tdValor = document.createElement("td");
+                    tdValor.textContent(produto.valor);
+                    var tdQuantidade = document.createElement("td");
+                    tdQuantidade.textContent(produto.quantidade);
+                    var botaoAlterar = document.createElement("button");
+                    botaoAlterar.classList.add("btn btn-primary");
+                    var botaoRemover = document.createElement("button");
+                    botaoRemover.classList.add("btn btn-danger");
+                    table.appendChild(thId);
+                    table.appendChild(tdDescricao);
+                    table.appendChild(tdValor);
+                    table.appendChild(tdQuantidade);
+                    table.appendChild(botaoAlterar);
+                    table.appendChild(botaoRemover);
+                })
+            });
+            obterProdutos();
+        }
+    </script>
 </body>
 
 </html>
