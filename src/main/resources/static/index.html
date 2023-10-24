@@ -32,6 +32,8 @@
             margin-right: 10px;
         }
     </style>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
 </head>
 
 <body>
@@ -58,46 +60,6 @@
                         </tr>
                     </thead>
                     <tbody id="productTableBody">
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Produto 1</td>
-                            <td>R$ 25.50</td>
-                            <td>50</td>
-                            <td><button type="button" class="btn btn-primary">Alterar</button></td>
-                            <td><button type="button" class="btn btn-danger">Deletar</button></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Produto 2</td>
-                            <td>R$ 15.30</td>
-                            <td>30</td>
-                            <td><button type="button" class="btn btn-primary">Alterar</button></td>
-                            <td><button type="button" class="btn btn-danger">Deletar</button></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td>Produto 3</td>
-                            <td>R$ 45.20</td>
-                            <td>20</td>
-                            <td><button type="button" class="btn btn-primary">Alterar</button></td>
-                            <td><button type="button" class="btn btn-danger">Deletar</button></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">4</th>
-                            <td>Produto 4</td>
-                            <td>R$ 32.10</td>
-                            <td>70</td>
-                            <td><button type="button" class="btn btn-primary">Alterar</button></td>
-                            <td><button type="button" class="btn btn-danger">Deletar</button></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">5</th>
-                            <td>Produto 5</td>
-                            <td>R$ 55.70</td>
-                            <td>40</td>
-                            <td><button type="button" class="btn btn-primary">Alterar</button></td>
-                            <td><button type="button" class="btn btn-danger">Deletar</button></td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -149,35 +111,89 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-
     <script>
-        function obterProdutos() {
-            var table = document.querySelector("table");
-            fetch('http://localhost:8080/produto').then(res => res.json()).then(res => res.content).then(produtos => {
-                produtos.foreach(produto => {
-                    console.log(produto);
-                    var thId = document.createElement("th");
-                    thId.setAttribute("scope", "row");
-                    var tdDescricao = document.createElement("td");
-                    tdDescricao.textContent(produto.descricao);
-                    var tdValor = document.createElement("td");
-                    tdValor.textContent(produto.valor);
-                    var tdQuantidade = document.createElement("td");
-                    tdQuantidade.textContent(produto.quantidade);
-                    var botaoAlterar = document.createElement("button");
-                    botaoAlterar.classList.add("btn btn-primary");
-                    var botaoRemover = document.createElement("button");
-                    botaoRemover.classList.add("btn btn-danger");
-                    table.appendChild(thId);
-                    table.appendChild(tdDescricao);
-                    table.appendChild(tdValor);
-                    table.appendChild(tdQuantidade);
-                    table.appendChild(botaoAlterar);
-                    table.appendChild(botaoRemover);
+        function deleteUserById(id) {
+            console.log(id)
+            fetch(`http://localhost:8080/produto/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => {
+                    if (response.status === 204) {
+                        console.log(`Usuário com ID ${id} deletado com sucesso.`);
+                        // Atualizar a lista de usuários ou realizar outras ações necessárias aqui.
+                    } else {
+                        console.error(`Erro ao deletar usuário com ID ${id}`);
+                    }
                 })
-            });
-            obterProdutos();
+                .catch(error => {
+                    console.error('Erro:', error);
+                });
         }
+    </script>
+    <script>
+        function fetchProducts() {
+            var table = $("table");
+            fetch('http://localhost:8080/produto', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(res => {
+                    var produtos = res.content;
+                    console.log(produtos);
+                    produtos.forEach(function (produto) {
+                        var tr = $("<tr>");
+
+                        var thId = $("<th>");
+                        thId.attr("scope", "row");
+                        thId.text(produto.codigo);
+
+                        var tdDescricao = $("<td>");
+                        tdDescricao.text(produto.descricao);
+
+                        var tdValor = $("<td>");
+                        tdValor.text(produto.valor);
+
+                        var tdQuantidade = $("<td>");
+                        tdQuantidade.text(produto.quantidade);
+
+                        var tdBotaoAlterar = $("<td>");
+                        var botaoAlterar = $("<button>");
+                        botaoAlterar.addClass("btn btn-primary");
+                        botaoAlterar.text("Alterar");
+                        tdBotaoAlterar.append(botaoAlterar);
+                        
+                        var tdBotaoRemover = $("<td>");
+                        var botaoRemover = $("<button>");
+                        botaoRemover.addClass("btn btn-danger");
+                        botaoRemover.text("Deletar");
+                        botaoRemover.click((event) => {
+                            deleteUserById(produto.codigo);
+                        });
+                        tdBotaoRemover.append(botaoRemover);
+
+
+                        tr.append(thId);
+                        tr.append(tdDescricao);
+                        tr.append(tdValor);
+                        tr.append(tdQuantidade);
+                        tr.append(tdBotaoAlterar);
+                        tr.append(tdBotaoRemover);
+
+                        table.append(tr);
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                });
+        }
+
+        fetchProducts();
     </script>
 </body>
 
