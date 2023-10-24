@@ -30,7 +30,7 @@ public class Produto {
 	@Column(name = "ID")
 	private Long id;
 	@NotBlank
-	@Column(name = "DESCRICAO")
+	@Column(name = "DESCRICAO", unique = true)
 	private String descricao;
 	@PositiveOrZero
 	@Column(name = "VALOR")

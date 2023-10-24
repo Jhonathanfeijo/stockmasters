@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exemplo Bootstrap</title>
+    <title>Stock Masters - Estoque de produtos</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <style>
         body {
@@ -33,12 +33,11 @@
         }
     </style>
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #23468C;">
-        <a class="navbar-brand mx-4" href="#">StockMaster</a>
+        <a class="navbar-brand mx-4" href="#">Stock Masters - Estoque de produtos</a>
     </nav>
     <div class="container mt-4">
         <div class="row justify-content-center">
@@ -46,9 +45,9 @@
                 <!-- Campo de pesquisa e botão -->
                 <div class="search-container">
                     <input type="text" class="form-control" placeholder="Pesquisar produto" id="searchInput">
-                    <button class="btn btn-primary" type="button" onclick="fetchProducts()">Pesquisar</button>
+                    <button class="btn btn-primary" type="button" onclick="fetchProductsByDescriptionLike()">Pesquisar</button>
                 </div>
-                <table class="table table-bordered">
+                <table class="table table-bordered table-rounded">
                     <thead class="thead-dark">
                         <tr>
                             <th scope="col">Código do Produto</th>
@@ -69,7 +68,6 @@
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProductModal">Cadastrar
             Produto</button>
     </div>
-
     <!-- Modal -->
     <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel"
         aria-hidden="true">
@@ -84,26 +82,77 @@
                 <div class="modal-body">
                     <form>
                         <div class="form-group">
-                            <label for="productCode">Código do Produto</label>
-                            <input type="text" class="form-control" id="productCode">
-                        </div>
-                        <div class="form-group">
                             <label for="productDescription">Descrição do Produto</label>
                             <input type="text" class="form-control" id="productDescription">
                         </div>
                         <div class="form-group">
                             <label for="productPrice">Preço do Produto</label>
-                            <input type="text" class="form-control" id="productPrice">
+                            <input type="text" class="form-control" id="productPrice"
+                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                         </div>
                         <div class="form-group">
                             <label for="productQuantity">Quantidade do Produto</label>
-                            <input type="text" class="form-control" id="productQuantity">
+                            <input type="text" class="form-control" id="productQuantity"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-primary" onclick="addProduct()">Salvar</button>
+                    <button type="button" class="btn btn-primary" onclick=addProduct()>Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteProductModal" tabindex="-1" role="dialog"
+        aria-labelledby="deleteProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteProductModalLabel">Excluir Produto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Você tem certeza que deseja excluir este produto?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Não</button>
+                    <button type="button" class="btn btn-primary" id="confirmDeleteButton">Sim</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editProductModal" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProductModalLabel">Editar Produto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="productDescriptionEdit">Descrição do Produto</label>
+                            <input type="text" class="form-control" id="productDescriptionEdit">
+                        </div>
+                        <div class="form-group">
+                            <label for="productPriceEdit">Preço do Produto</label>
+                            <input type="text" class="form-control" id="productPriceEdit">
+                        </div>
+                        <div class="form-group">
+                            <label for="productQuantityEdit">Quantidade do Produto</label>
+                            <input type="text" class="form-control" id="productQuantityEdit">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="saveChangesButton">Salvar</button>
                 </div>
             </div>
         </div>
@@ -111,90 +160,7 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script>
-        function deleteUserById(id) {
-            console.log(id)
-            fetch(`http://localhost:8080/produto/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => {
-                    if (response.status === 204) {
-                        console.log(`Usuário com ID ${id} deletado com sucesso.`);
-                        // Atualizar a lista de usuários ou realizar outras ações necessárias aqui.
-                    } else {
-                        console.error(`Erro ao deletar usuário com ID ${id}`);
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro:', error);
-                });
-        }
-    </script>
-    <script>
-        function fetchProducts() {
-            var table = $("table");
-            fetch('http://localhost:8080/produto', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => response.json())
-                .then(res => {
-                    var produtos = res.content;
-                    console.log(produtos);
-                    produtos.forEach(function (produto) {
-                        var tr = $("<tr>");
-
-                        var thId = $("<th>");
-                        thId.attr("scope", "row");
-                        thId.text(produto.codigo);
-
-                        var tdDescricao = $("<td>");
-                        tdDescricao.text(produto.descricao);
-
-                        var tdValor = $("<td>");
-                        tdValor.text(produto.valor);
-
-                        var tdQuantidade = $("<td>");
-                        tdQuantidade.text(produto.quantidade);
-
-                        var tdBotaoAlterar = $("<td>");
-                        var botaoAlterar = $("<button>");
-                        botaoAlterar.addClass("btn btn-primary");
-                        botaoAlterar.text("Alterar");
-                        tdBotaoAlterar.append(botaoAlterar);
-                        
-                        var tdBotaoRemover = $("<td>");
-                        var botaoRemover = $("<button>");
-                        botaoRemover.addClass("btn btn-danger");
-                        botaoRemover.text("Deletar");
-                        botaoRemover.click((event) => {
-                            deleteUserById(produto.codigo);
-                        });
-                        tdBotaoRemover.append(botaoRemover);
-
-
-                        tr.append(thId);
-                        tr.append(tdDescricao);
-                        tr.append(tdValor);
-                        tr.append(tdQuantidade);
-                        tr.append(tdBotaoAlterar);
-                        tr.append(tdBotaoRemover);
-
-                        table.append(tr);
-                    });
-                })
-                .catch(error => {
-                    console.error('Erro:', error);
-                });
-        }
-
-        fetchProducts();
-    </script>
+    <script src="app.js"></script>
 </body>
 
 </html>

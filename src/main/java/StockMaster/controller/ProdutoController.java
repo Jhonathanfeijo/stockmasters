@@ -4,6 +4,7 @@ import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +54,16 @@ public class ProdutoController {
 		return ResponseEntity.ok().body(pagina);
 	}
 
+    @GetMapping("/contains/{descricao}")
+    public ResponseEntity<Page<ProdutoDto>> obterProdutosPorDescricaoLike(@PathVariable("descricao") String descricao) {
+        System.out.println(descricao);
+        Pageable pageable = PageRequest.of(0, 10); 
+        Page<Produto> produtosDescricaoLikePage = produtoRepository.findByDescricaoContainingCustomQuery(descricao, pageable);
+        Page<ProdutoDto> produtoDtoPage = produtosDescricaoLikePage.map(ProdutoDto::new);
+        System.out.println(produtoDtoPage.getContent());
+        return ResponseEntity.ok(produtoDtoPage);
+    }
+
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<ProdutoDto> atualizarProduto(@PathVariable("id") Long id,
@@ -67,9 +78,10 @@ public class ProdutoController {
 
 	@DeleteMapping("/{id}")
 	@Transactional
-	public void deletarProduto(@PathVariable("id") Long id) {
+	public ResponseEntity<ProdutoDto> deletarProduto(@PathVariable("id") Long id) {
 		if (!produtoRepository.existsById(id))
 			throw new ProdutoNotFoundException();
 		produtoRepository.deleteById(id);
+		return ResponseEntity.noContent().build();
 	}
 }
