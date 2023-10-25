@@ -13,6 +13,6 @@ Lombok<br/>
 Flyway<br/>
 
 ## Autor
-Nome: Jhonathan Feijó de Moraes
+Nome: Jhonathan Feijó de Moraes <br/>
 Linkedin: www.linkedin.com/in/jhonathanfeijo
 
