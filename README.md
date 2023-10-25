@@ -5,11 +5,12 @@ Esse projeto consiste em realizar operações CRUD (Inserir, ler, atualizar e de
 
 ## Ferramentas utilizadas
 
-JDK 17
-Springboot
-MySQL
-Lombok
-Flyway
+JDK 17 <br/>
+Javascript <br/>
+Springboot<br/>
+MySQL<br/>
+Lombok<br/>
+Flyway<br/>
 
 ## Autor
 Nome: Jhonathan Feijó de Moraes
