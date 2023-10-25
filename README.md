@@ -11,10 +11,11 @@ Springboot<br/>
 MySQL<br/>
 Lombok<br/>
 Flyway<br/>
+Bootstrap <br/>
 
-##O que preciso para rodar a aplicação?
-Em um primeiro momento você precisa ter duas ferramentas instaladas em sua máquina, JDK 17, MySQL.
-Após garantir que as ferramentas estejam instaladas, será necessário realizar as configurações do banco de dados MySQL em application.properties.
+## O que preciso para rodar a aplicação?
+Em um primeiro momento você precisa ter duas ferramentas instaladas em sua máquina, JDK 17, MySQL.<br/>
+Após garantir que as ferramentas estejam instaladas, será necessário realizar as configurações do banco de dados MySQL em application.properties. </br>
 E pronto, sua aplicação já está pronta!
 
 ## Autor
