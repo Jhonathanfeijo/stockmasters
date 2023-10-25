@@ -54,15 +54,15 @@ public class ProdutoController {
 		return ResponseEntity.ok().body(pagina);
 	}
 
-    @GetMapping("/contains/{descricao}")
-    public ResponseEntity<Page<ProdutoDto>> obterProdutosPorDescricaoLike(@PathVariable("descricao") String descricao) {
-        System.out.println(descricao);
-        Pageable pageable = PageRequest.of(0, 10); 
-        Page<Produto> produtosDescricaoLikePage = produtoRepository.findByDescricaoContainingCustomQuery(descricao, pageable);
-        Page<ProdutoDto> produtoDtoPage = produtosDescricaoLikePage.map(ProdutoDto::new);
-        System.out.println(produtoDtoPage.getContent());
-        return ResponseEntity.ok(produtoDtoPage);
-    }
+	@GetMapping("/contains/{descricao}")
+	public ResponseEntity<Page<ProdutoDto>> obterProdutosPorDescricaoLike(@PathVariable("descricao") String descricao) {
+		Pageable pageable = PageRequest.of(0, 10);
+		Page<Produto> produtosDescricaoLikePage = produtoRepository.findByDescricaoContainingCustomQuery(descricao,
+				pageable);
+		Page<ProdutoDto> produtoDtoPage = produtosDescricaoLikePage.map(ProdutoDto::new);
+		System.out.println(produtoDtoPage.getContent());
+		return ResponseEntity.ok(produtoDtoPage);
+	}
 
 	@PutMapping("/{id}")
 	@Transactional
